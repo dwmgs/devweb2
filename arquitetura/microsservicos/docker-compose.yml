@@ -15,10 +15,6 @@ services:
 
     mult:
         build: mult
-        ports:
-            - "5001:5001"
-            - "5002:5002"
-            - "5003:5003"
 
     nginx:
         container_name: nginx
