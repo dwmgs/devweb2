@@ -15,4 +15,4 @@ RUN pip install -r requirements.txt
 COPY . .
 
 # Executa o servidor FastAPI com Uvicorn
-CMD ["fastapi", "run", "app.py", "--port", "5000"]
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "5000"]

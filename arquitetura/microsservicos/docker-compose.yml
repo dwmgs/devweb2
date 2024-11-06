@@ -1,20 +1,37 @@
 version: '3.7'
 services:
 
-    ping:
+    ping1:
         build: ping
+        container_name: microsservicos_ping_1
+
+    ping2:
+        build: ping
+        container_name: microsservicos_ping_2    
 
     calc:
         build: calc
+        container_name: microsservicos_calc_1
 
     soma:
         build: soma
+        container_name: microsservicos_soma_1
 
     sub:
         build: sub
+        container_name: microsservicos_sub_1
 
-    mult:
+    mult1:
         build: mult
+        container_name: microsservicos_mult_1
+
+    mult2:
+        build: mult
+        container_name: microsservicos_mult_2
+
+    mult3:
+        build: mult
+        container_name: microsservicos_mult_3    
 
     nginx:
         container_name: nginx
@@ -22,8 +39,11 @@ services:
         ports:
             - 80:80
         depends_on:
-           - ping
+           - ping1
+           - ping2
            - calc
            - soma
            - sub
-           - mult
+           - mult1
+           - mult2
+           - mult3
