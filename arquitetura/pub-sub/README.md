@@ -27,7 +27,7 @@ O exemplo exibe um projeto que utiliza microsserviços e o apache kafka. O apach
 Para executá-lo, basta baixar a pasta do projeto (pub-sub) e executar o comando "docker-compose up" na pasta principal. 
 
 ```
-$ sudo docker-compose up --build 
+sudo docker-compose up --build 
 ```
 
 ![image](https://user-images.githubusercontent.com/276077/162104971-34cde74b-c4f7-4da5-a2da-d18176780838.png)
@@ -47,7 +47,7 @@ Se tudo estiver ocorrido da forma esperada, o resultado será algo assim:
 Ainda é possível analisar cada um dos logs gerados pelas aplicações no container usando o comando "docker logs". 
 
 ```
-sudo docker logs pub-sub_rotate_1 -f
+sudo docker logs -f
 ```
 
 
@@ -70,10 +70,17 @@ Por fim, o comando 'docker-compose down' derruba todos os serviços.
 ```
 sudo docker-compose down
 ```
+## Atividade novo consumidor
 
-## Atividade
+![image](https://github.com/user-attachments/assets/00f21461-7345-45e4-9d08-38763657465a)
+
+Baseando-se no código indicado em [https://gist.github.com/rodrigoclira/9e1be73222f16248a59b1389905b1d6c](https://gist.github.com/rodrigoclira/9e1be73222f16248a59b1389905b1d6c), crie um novo consumidor que irá escrever o nome do arquivo na imagem. Ao final, do upload, os três microsserviços serão notificados para que realizem suas respectivas operações.
+
+
+## Atividade novo(s) tópico(s)
 
 Adicione uma novo ator (microsserviço) no projeto que será responsável por notificar através do telegram ou e-mail que a operação do 'rotate' ou 'grayscale' foi finalizada. Para isso será necessário alterar o projeto adicionando uma nova etapa de pubicação num novo tópico (por exemplo **/notificacao**) por parte do microsserviço 'rotate' e 'grayscale'. O novo microsserviço '**notifacador**' será responsável por checar (pooling) o tópico e fazer o envio de mensagem no telegram ou e-mail para um contato defindo (pode ser fixo ou variável**) quando a operação estiver finalizada. 
+
 ** Se fizer variável, coloque um input de e-mail/telegram_id no HTML do microsserviço 'upload'. 
 
 As mensagens enviadas devem conter:
