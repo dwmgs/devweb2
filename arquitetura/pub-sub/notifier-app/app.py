@@ -33,7 +33,7 @@ try:
             continue
         elif not msg.error():
             data = json.loads(msg.value())
-            file_name = data['file_name']
+            file_name = data['new_file']
             operation = data['operation']
             recipient = data['email']
             subject = "Notificação de Processamento"
