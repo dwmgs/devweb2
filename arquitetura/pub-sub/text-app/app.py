@@ -1,6 +1,6 @@
 from PIL import Image, ImageOps
 import os
-from confluent_kafka import Consumer, KafkaError
+from confluent_kafka import Consumer, KafkaError, Producer
 import json
 import logging
 from time import sleep
@@ -23,6 +23,21 @@ def insert_text(path_file):
     draw.text((0, 0), name, fill='white', font_size=35)
     original_image.save(output_folder + name + NEW + ext)
 
+    notify_operation(filename, "text")
+
+def notify_operation(filename, operation):
+    topic = 'notificacao'
+    message = {
+        "filename": filename,
+        "operation": operation
+    }
+    producer = Producer({'bootstrap.servers': 'kafka1:19091,kafka2:19092,kafka3:19093'})
+
+    try:
+        producer.produce(topic, value=json.dumps(message))
+        producer.flush()
+    except Exception as e:
+        logging.error(f"Erro ao enviar mensagem para o Kafka: {e}")
 
 #sleep(30)
 ### Consumer
