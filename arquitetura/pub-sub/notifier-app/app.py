@@ -33,11 +33,10 @@ try:
             continue
         elif not msg.error():
             data = json.loads(msg.value())
-            file_name = data['new_file']
             operation = data['operation']
             recipient = data['email']
             subject = "Notificação de Processamento"
-            body = f"O arquivo {file_name} foi {operation}."
+            body = f"O arquivo foi {operation}."
             send_email(recipient, subject, body)
         elif msg.error().code() == KafkaError._PARTITION_EOF:
             print("Fim da partição.")
