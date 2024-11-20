@@ -6,7 +6,7 @@ from confluent_kafka import Consumer, KafkaError
 
     
 api_key = '7558770276:AAGjPSHiuQF-G_LIYg-7jS4sIlMUA6LbQ50'
-user_id = '4535057340'
+user_id = '6660744050'
 
 
 
