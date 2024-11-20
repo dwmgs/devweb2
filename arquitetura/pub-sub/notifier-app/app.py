@@ -1,46 +1,54 @@
-import smtplib
-from email.mime.text import MIMEText
-from confluent_kafka import Consumer, KafkaError
 import json
+import logging
+import telegram
+import asyncio
+from confluent_kafka import Consumer, KafkaError
 
-consumer = Consumer({
-    'bootstrap.servers': 'kafka1:19091,kafka2:19092,kafka3:19093',
-    'group.id': 'notificador-group',
-    'auto.offset.reset': 'earliest'
+    
+api_key = '7558770276:AAGjPSHiuQF-G_LIYg-7jS4sIlMUA6LbQ50'
+user_id = '4535057340'
+
+
+
+
+async def send_telegram_message(message):
+    bot = telegram.Bot(token=api_key)
+    await bot.send_message(chat_id=user_id, text=message)
+
+
+c = Consumer({
+        'bootstrap.servers': 'kafka1:19091,kafka2:19092,kafka3:19093',
+        'group.id': 'notifier-group',
+        'client.id': 'client-1',
+        'enable.auto.commit': True,
+        'session.timeout.ms': 6000,
+        'default.topic.config': {'auto.offset.reset': 'smallest'}
 })
-consumer.subscribe(['notificacao'])
 
-SMTP_SERVER = 'smtp.gmail.com'
-SMTP_PORT = 587
-EMAIL_USER = 'atvweb2notf@gmail.com'
-EMAIL_PASS = 'M8n7b6v5c4'
-
-def send_email(to_email, subject, body):
-    msg = MIMEText(body)
-    msg['Subject'] = subject
-    msg['From'] = EMAIL_USER
-    msg['To'] = to_email
-
-    with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-        server.starttls()
-        server.login(EMAIL_USER, EMAIL_PASS)
-        server.send_message(msg)
+c.subscribe(['notificacao'])
 
 try:
     while True:
-        msg = consumer.poll(1.0)
+        msg = c.poll(1.0)
         if msg is None:
             continue
-        elif not msg.error():
-            data = json.loads(msg.value())
-            operation = data['operation']
-            recipient = data['email']
-            subject = "Notificação de Processamento"
-            body = f"O arquivo foi {operation}."
-            send_email(recipient, subject, body)
-        elif msg.error().code() == KafkaError._PARTITION_EOF:
-            print("Fim da partição.")
-        else:
-            print(f"Erro: {msg.error().str()}")
+        if msg.error():
+            if msg.error().code() == KafkaError._PARTITION_EOF:
+                logging.info(f'Fim da partição: {msg.topic()} {msg.partition()}')
+            else:
+                logging.error(f'Erro: {msg.error().str()}')
+            continue
+
+        data = json.loads(msg.value().decode('utf-8'))
+        filename = data.get('filename')
+        operation = data.get('operation')
+        logging.warning(f"READING {filename}")
+        notification_message = f'O arquivo {filename} foi {operation}.'
+        asyncio.run(send_telegram_message(notification_message))
+        logging.warning(f"ENDING {filename}")
+
+
+except KeyboardInterrupt:
+    pass
 finally:
-    consumer.close()
+    c.close()

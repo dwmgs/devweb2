@@ -38,7 +38,6 @@ def notify_operation(filename, operation):
     except Exception as e:
         logging.error(f"Erro ao enviar mensagem para o Kafka: {e}")
 
-
 #sleep(30)
 ### Consumer
 c = Consumer({

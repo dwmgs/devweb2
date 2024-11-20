@@ -30,11 +30,6 @@ services:
     container_name: notifier
     volumes:
       - ./appdata:/appdata
-    environment:
-      - SMTP_SERVER=smtp.gmail.com
-      - SMTP_PORT=587
-      - EMAIL_USER=atvweb2notf@gmail.com
-      - EMAIL_PASS=M8n7b6v5c4
     depends_on:
       - kafka1    
 
